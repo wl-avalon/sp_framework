@@ -7,9 +7,9 @@
  */
 
 namespace sp_framework\ext\log;
+use sp_framework\SpModule;
 use Yii;
 use yii\log\Dispatcher;
-//use rrxframework\base\JdbModule;
 
 class SpYiiLogDispatcher extends Dispatcher
 {
@@ -41,20 +41,16 @@ class SpYiiLogDispatcher extends Dispatcher
             $path_info = $request->getPathInfo();
 
         }
-
         $pos = strpos($path_info, self::PATH_SEPATATOR);
         if($pos === false){
             $module_name = empty($this->default_module) ? self::DEFAULT_MODULE : $this->default_module;
         }else{
             $module_name = substr($path_info, 0, $pos);
         }
-
         if(!empty($this->module_map[$module_name])){
             $module_name = $this->module_map[$module_name];
         }
-
-//        JdbModule::setModuleName($module_name);
-
+        SpModule::setModuleName($module_name);
         parent::init();
     }
 }

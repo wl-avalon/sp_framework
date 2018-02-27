@@ -9,6 +9,7 @@
 namespace sp_framework\ext\log;
 use Yii;
 use yii\base\Component;
+use yii\log\Dispatcher;
 use yii\log\Logger;
 use sp_framework\components\SpLog;
 
@@ -80,7 +81,7 @@ class SpYiiLogger extends Component
 
         $this->add_notice_data = [];
         $this->timer_data = [];
-        Yii::setLogger($this);
+//        Yii::setLogger($this);
         SpLog::setLogger($this);
 
         parent::__construct($config);
@@ -150,7 +151,7 @@ class SpYiiLogger extends Component
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
-        $this->jdbLog($level, $str, $errno, $args, $depth + 1);
+        $this->spLog($level, $str, $errno, $args, $depth + 1);
     }
 
     public function trace($str = '', $errno = 0, $args = null, $depth = 0) {
@@ -158,7 +159,7 @@ class SpYiiLogger extends Component
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
-        $this->jdbLog($level, $str, $errno, $args, $depth + 1);
+        $this->spLog($level, $str, $errno, $args, $depth + 1);
     }
 
     public function notice($str = '', $errno = 0, $args = null, $depth = 0) {
@@ -169,7 +170,7 @@ class SpYiiLogger extends Component
 
         $timers = $this->calcTimers('TIMER_');
         $args = is_array($args) ? array_merge($args, $this->add_notice_data, $timers) : array_merge($this->add_notice_data, $timers);
-        $this->jdbLog($level, $str, $errno, $args, $depth + 1);
+        $this->spLog($level, $str, $errno, $args, $depth + 1);
     }
 
     public function warning($str = '', $errno = 0, $args = null, $depth = 0) {
@@ -177,7 +178,7 @@ class SpYiiLogger extends Component
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
-        $this->jdbLog($level, $str, $errno, $args, $depth + 1);
+        $this->spLog($level, $str, $errno, $args, $depth + 1);
     }
 
     public function fatal($str = '', $errno = 0, $args = null, $depth = 0) {
@@ -185,10 +186,10 @@ class SpYiiLogger extends Component
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
-        $this->jdbLog($level, $str, $errno, $args, $depth + 1);
+        $this->spLog($level, $str, $errno, $args, $depth + 1);
     }
 
-    private function jdbLog($log_level, $str, $errno, $args, $depth, $category = "application"){
+    private function spLog($log_level, $str, $errno, $args, $depth, $category = "application"){
         $time = microtime(true);
         $traces = [];
         $this->messages[] = [$str, $log_level, $category, $time, $traces, $errno, $args, $depth + 1];

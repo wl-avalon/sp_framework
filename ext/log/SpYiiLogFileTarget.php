@@ -107,8 +107,8 @@ class SpYiiLogFileTarget extends Target
             return LOG_ID;
         }
 
-        if (isset($_SERVER['HTTP_JDB_HEADER_RID'])){
-            $log_id = trim($_SERVER['HTTP_JDB_HEADER_RID']);
+        if (isset($_SERVER['HTTP_SP_HEADER_RID'])){
+            $log_id = trim($_SERVER['HTTP_SP_HEADER_RID']);
         }else{
             $arr = gettimeofday();
             $log_id = ((($arr['sec'] * 100000 + $arr['usec'] / 10) & 0x7FFFFFFF) | 0x80000000);
