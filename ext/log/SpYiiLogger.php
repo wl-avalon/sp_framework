@@ -15,29 +15,29 @@ use sp_framework\components\SpLog;
 
 class SpYiiLogger extends Component
 {
-    const LOG_LEVEL_FATAL   = 0x01;
+    const LEVEL_FATAL   = 0x01;
     const LEVEL_WARNING = 0x02;
-    const LOG_LEVEL_NOTICE  = 0x04;
-    const LOG_LEVEL_TRACE   = 0x08;
-    const LOG_LEVEL_DEBUG  = 0x10;
+    const LEVEL_NOTICE  = 0x04;
+    const LEVEL_TRACE   = 0x08;
+    const LEVEL_DEBUG  = 0x10;
 
 
     static public $yii_log_level_map = array(
         Logger::LEVEL_WARNING => self::LEVEL_WARNING,
-        Logger::LEVEL_ERROR => self::LOG_LEVEL_FATAL,
-        Logger::LEVEL_INFO => self::LOG_LEVEL_DEBUG,
-        Logger::LEVEL_TRACE => self::LOG_LEVEL_TRACE,
-        Logger::LEVEL_PROFILE => self::LOG_LEVEL_TRACE,
-        Logger::LEVEL_PROFILE_BEGIN => self::LOG_LEVEL_TRACE,
-        Logger::LEVEL_PROFILE_END => self::LOG_LEVEL_TRACE,
+        Logger::LEVEL_ERROR => self::LEVEL_FATAL,
+        Logger::LEVEL_INFO => self::LEVEL_DEBUG,
+        Logger::LEVEL_TRACE => self::LEVEL_TRACE,
+        Logger::LEVEL_PROFILE => self::LEVEL_TRACE,
+        Logger::LEVEL_PROFILE_BEGIN => self::LEVEL_TRACE,
+        Logger::LEVEL_PROFILE_END => self::LEVEL_TRACE,
     );
 
     static public $log_level_map = array(
-        self::LOG_LEVEL_FATAL   => 'FATAL',
+        self::LEVEL_FATAL   => 'FATAL',
         self::LEVEL_WARNING => 'WARNING',
-        self::LOG_LEVEL_NOTICE  => 'NOTICE',
-        self::LOG_LEVEL_TRACE   => 'TRACE',
-        self::LOG_LEVEL_DEBUG   => 'DEBUG',
+        self::LEVEL_NOTICE  => 'NOTICE',
+        self::LEVEL_TRACE   => 'TRACE',
+        self::LEVEL_DEBUG   => 'DEBUG',
     );
 
 
@@ -81,7 +81,7 @@ class SpYiiLogger extends Component
 
         $this->add_notice_data = [];
         $this->timer_data = [];
-//        Yii::setLogger($this);
+        Yii::setLogger($this);
         SpLog::setLogger($this);
 
         parent::__construct($config);
@@ -147,7 +147,7 @@ class SpYiiLogger extends Component
     }
 
     public function debug($str = '', $errno = 0, $args = null, $depth = 0) {
-        $level = self::LOG_LEVEL_DEBUG;
+        $level = self::LEVEL_DEBUG;
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
@@ -155,7 +155,7 @@ class SpYiiLogger extends Component
     }
 
     public function trace($str = '', $errno = 0, $args = null, $depth = 0) {
-        $level = self::LOG_LEVEL_TRACE;
+        $level = self::LEVEL_TRACE;
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
@@ -163,7 +163,7 @@ class SpYiiLogger extends Component
     }
 
     public function notice($str = '', $errno = 0, $args = null, $depth = 0) {
-        $level = self::LOG_LEVEL_NOTICE;
+        $level = self::LEVEL_NOTICE;
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
@@ -182,7 +182,7 @@ class SpYiiLogger extends Component
     }
 
     public function fatal($str = '', $errno = 0, $args = null, $depth = 0) {
-        $level = self::LOG_LEVEL_FATAL;
+        $level = self::LEVEL_FATAL;
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
