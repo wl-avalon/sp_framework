@@ -9,10 +9,6 @@
 namespace sp_framework\util;
 use sp_framework\components\SpLog;
 use Yii;
-
-use rrxframework\util\DictUtil;
-use rrxframework\util\RpcInfoUtil;
-
 class HttpUtil {
 
     private $arrOptions = [
@@ -67,7 +63,6 @@ class HttpUtil {
         $curl = $this->getHandle($strUrl, $arrReq);
 
         while ($intCounter < $intMaxRetry) {
-            $strRpcId = RpcInfoUtil::getNextRpcId();
             $this->setHeaderOption($curl, $arrReq);
             // 记录重试日志
             if ($intCounter > 0) {
