@@ -16,14 +16,14 @@ use sp_framework\components\SpLog;
 class SpYiiLogger extends Component
 {
     const LOG_LEVEL_FATAL   = 0x01;
-    const LOG_LEVEL_WARNING = 0x02;
+    const LEVEL_WARNING = 0x02;
     const LOG_LEVEL_NOTICE  = 0x04;
     const LOG_LEVEL_TRACE   = 0x08;
     const LOG_LEVEL_DEBUG  = 0x10;
 
 
     static public $yii_log_level_map = array(
-        Logger::LEVEL_WARNING => self::LOG_LEVEL_WARNING,
+        Logger::LEVEL_WARNING => self::LEVEL_WARNING,
         Logger::LEVEL_ERROR => self::LOG_LEVEL_FATAL,
         Logger::LEVEL_INFO => self::LOG_LEVEL_DEBUG,
         Logger::LEVEL_TRACE => self::LOG_LEVEL_TRACE,
@@ -34,7 +34,7 @@ class SpYiiLogger extends Component
 
     static public $log_level_map = array(
         self::LOG_LEVEL_FATAL   => 'FATAL',
-        self::LOG_LEVEL_WARNING => 'WARNING',
+        self::LEVEL_WARNING => 'WARNING',
         self::LOG_LEVEL_NOTICE  => 'NOTICE',
         self::LOG_LEVEL_TRACE   => 'TRACE',
         self::LOG_LEVEL_DEBUG   => 'DEBUG',
@@ -174,7 +174,7 @@ class SpYiiLogger extends Component
     }
 
     public function warning($str = '', $errno = 0, $args = null, $depth = 0) {
-        $level = self::LOG_LEVEL_WARNING;
+        $level = self::LEVEL_WARNING;
         if($this->log_level > 0 && $level > $this->log_level){
             return;
         }
