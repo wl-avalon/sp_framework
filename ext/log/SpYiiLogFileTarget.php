@@ -7,10 +7,10 @@
  */
 
 namespace sp_framework\ext\log;
+use sp_framework\SpModule;
 use Yii;
 use yii\log\Logger;
 use yii\log\Target;
-use rrxframework\base\JdbModule;
 use yii\helpers\FileHelper;
 
 class SpYiiLogFileTarget extends Target
@@ -138,7 +138,7 @@ class SpYiiLogFileTarget extends Target
 
         $time = isset($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time();
         // ex:/data/logs/payui/20160405/payui_09.log
-        $moduleName = JdbModule::getModuleName();
+        $moduleName = SpModule::getModuleName();
         $logDir = $this->log_path;
         if(!is_dir($logDir)) {
             FileHelper::createDirectory($logDir, $this->dirMode, true);
@@ -205,7 +205,7 @@ class SpYiiLogFileTarget extends Target
             return;
         }
 
-        $module_name = JdbModule::getModuleName();
+        $module_name = SpModule::getModuleName();
         $log_dir_path = $this->log_path . "/" .  $module_name;
         if(!is_dir($log_dir_path)){
             FileHelper::createDirectory($log_dir_path, $this->dirMode, true);
