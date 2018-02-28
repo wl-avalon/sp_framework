@@ -25,6 +25,7 @@ abstract class BaseAction extends Action
 
     public function run(){
         try{
+            $this->formatParams();
             $result = $this->execute();
         }catch(SpException $e){
             $this->returnCode           = $e->getErrorCode();
