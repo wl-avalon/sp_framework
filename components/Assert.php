@@ -22,7 +22,7 @@ class Assert
             if ( "" != $logMsg ){
                 SpLog::warning("当前断言判断为假, userMsg: $msg , log:".$logMsg."errorCode:$errCode", 0, 0, 1);
             }
-            throw new SpException($errCode, null, $msg, $logMsg);
+            throw new SpException($errCode, $logMsg, $msg, null);
         }
     }
 }
