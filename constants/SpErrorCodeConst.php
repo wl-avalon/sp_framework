@@ -11,6 +11,12 @@ namespace sp_framework\constants;
 
 class SpErrorCodeConst
 {
-    const INSERT_DB_ERROR = 3327001;
-    const UPDATE_DB_ERROR = 3327002;
+    const SUCCESSFUL        = 0;
+
+    const NOT_YET_LOGIN     = 3327000;
+
+    const INSERT_DB_ERROR   = 3327001;
+    const UPDATE_DB_ERROR   = 3327002;
+
+    const REQUEST_FAILED    = 3327003;
 }

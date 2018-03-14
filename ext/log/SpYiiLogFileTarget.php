@@ -1,51 +1,44 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wzj-dev
- * Date: 18/2/27
- * Time: 下午3:06
- */
+namespace sp_framework\ext;
 
-namespace sp_framework\ext\log;
 use sp_framework\SpModule;
 use Yii;
+use yii\helpers\FileHelper;
 use yii\log\Logger;
 use yii\log\Target;
-use yii\helpers\FileHelper;
 
-class SpYiiLogFileTarget extends Target
-{
-    const LOG_LEVEL_FATAL   = 0x01;
+class SpYiiLogFileTarget extends Target{
+    const LOG_LEVEL_FATAL = 0x01;
     const LOG_LEVEL_WARNING = 0x02;
-    const LOG_LEVEL_NOTICE  = 0x04;
-    const LOG_LEVEL_TRACE   = 0x08;
-    const LOG_LEVEL_DEBUG   = 0x10;
+    const LOG_LEVEL_NOTICE = 0x04;
+    const LOG_LEVEL_TRACE = 0x08;
+    const LOG_LEVEL_DEBUG = 0x10;
 
-    static public $yii_log_level_map = array(
-        Logger::LEVEL_WARNING => self::LOG_LEVEL_WARNING,
-        Logger::LEVEL_ERROR => self::LOG_LEVEL_FATAL,
-        Logger::LEVEL_INFO => self::LOG_LEVEL_DEBUG,
-        Logger::LEVEL_TRACE => self::LOG_LEVEL_TRACE,
-        Logger::LEVEL_PROFILE => self::LOG_LEVEL_TRACE,
+    static public $yii_log_level_map = [
+        Logger::LEVEL_WARNING       => self::LOG_LEVEL_WARNING,
+        Logger::LEVEL_ERROR         => self::LOG_LEVEL_FATAL,
+        Logger::LEVEL_INFO          => self::LOG_LEVEL_DEBUG,
+        Logger::LEVEL_TRACE         => self::LOG_LEVEL_TRACE,
+        Logger::LEVEL_PROFILE       => self::LOG_LEVEL_TRACE,
         Logger::LEVEL_PROFILE_BEGIN => self::LOG_LEVEL_TRACE,
-        Logger::LEVEL_PROFILE_END => self::LOG_LEVEL_TRACE,
-    );
+        Logger::LEVEL_PROFILE_END   => self::LOG_LEVEL_TRACE,
+    ];
 
-    static public $log_level_map = array(
+    static public $log_level_map = [
         self::LOG_LEVEL_FATAL   => 'FATAL',
         self::LOG_LEVEL_WARNING => 'WARNING',
         self::LOG_LEVEL_NOTICE  => 'NOTICE',
         self::LOG_LEVEL_TRACE   => 'TRACE',
         self::LOG_LEVEL_DEBUG   => 'DEBUG',
-    );
+    ];
 
-    static public $log_suffix_map = array(
+    static public $log_suffix_map = [
         self::LOG_LEVEL_FATAL   => '.wf',
         self::LOG_LEVEL_WARNING => '.wf',
         self::LOG_LEVEL_NOTICE  => '',
-        self::LOG_LEVEL_TRACE   => '',
-        self::LOG_LEVEL_DEBUG   => '',
-    );
+        self::LOG_LEVEL_TRACE   => '.trace',
+        self::LOG_LEVEL_DEBUG   => '.trace',
+    ];
 
     const DEFAULT_FORMAT_DEBUG = "%s: %s %s [%s:%s] errno[%s] log_id[%s] %s %s\n";
     const DEFAULT_LOG_LEVEL = 16;
@@ -66,34 +59,31 @@ class SpYiiLogFileTarget extends Target
     public $dirMode = 0775;
 
 
-    public function init()
-    {
+    public function init(){
         parent::init();
 
-        $this->log_path = empty($this->log_path) ? Yii::$app->getRuntimePath()."/logs" : $this->log_path;
+        $this->log_path = empty($this->log_path) ? Yii::$app->getRuntimePath() . "/logs" : $this->log_path;
         $this->log_level = empty($this->log_level) ? self::DEFAULT_LOG_LEVEL : $this->log_level;
 
     }
 
-    public function collect($messages, $final)
-    {
+    public function collect($messages, $final){
         $this->messages = $messages;
 
         $this->export();
     }
 
 
-    public function export()
-    {
+    public function export(){
         $messages = $this->messages;
         //TODO:当messages为多条记录时可以修改为合并写，但是目前messages只会有一条记录
         foreach($messages as $message){
             $field_count = count($message);
             if($field_count >= 8){
-                list($str,$log_level,$category,$time,$traces,$errno,$args,$depth) = $message;
+                list($str, $log_level, $category, $time, $traces, $errno, $args, $depth) = $message;
                 $this->writeLog($log_level, $str, $errno, $args, $depth + 4);
             }else if($field_count === 5){
-                list($str,$log_level,$category,$time,$traces) = $message;
+                list($str, $log_level, $category, $time, $traces) = $message;
                 $this->writeLog($log_level, $str, 0, [], 0);
             }
 
@@ -102,12 +92,12 @@ class SpYiiLogFileTarget extends Target
 
     }
 
-    static public function genLogID() {
-        if (defined('LOG_ID')) {
+    static public function genLogID(){
+        if(defined('LOG_ID')){
             return LOG_ID;
         }
 
-        if (isset($_SERVER['HTTP_SP_HEADER_RID'])){
+        if(isset($_SERVER['HTTP_SP_HEADER_RID'])){
             $log_id = trim($_SERVER['HTTP_SP_HEADER_RID']);
         }else{
             $arr = gettimeofday();
@@ -130,21 +120,21 @@ class SpYiiLogFileTarget extends Target
      * @return boolean true/false
      * @throws \yii\base\Exception
      */
-    protected function writeAppLog($level, $message, $errno, $args, $depth) {
+    protected function writeAppLog($level, $message, $errno, $args, $depth){
 
-        if (($level > $this->log_level) || !isset(self::$log_level_map[$level])) {
-            return;
+        if(($level > $this->log_level) || !isset(self::$log_level_map[$level])){
+            return false;
         }
 
         $time = isset($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time();
         // ex:/data/logs/payui/20160405/payui_09.log
         $moduleName = SpModule::getModuleName();
         $logDir = $this->log_path;
-        if(!is_dir($logDir)) {
+        if(!is_dir($logDir)){
             FileHelper::createDirectory($logDir, $this->dirMode, true);
         }
 
-        $logFile = $logDir . "/" . $moduleName .'_'. date('H', $time)  . ".log";
+        $logFile = $logDir . "/" . $moduleName . '_' . date('H', $time) . ".log";
         $logFile = $logFile . self::getLogSuffixByLevel($level);
 
         $clientIp = '127.0.0.1';
@@ -158,20 +148,20 @@ class SpYiiLogFileTarget extends Target
             if($request->getIsConsoleRequest()){
                 $params = $request->getParams();
                 $pathInfo = trim($params[0], '/');
-            } else {
+            }else{
                 $pathInfo = $request->getPathInfo();
             }
 
             $traceLine = $pathInfo;
-        } else {
+        }else{
             $trace = debug_backtrace();
             $traceFile = isset($trace[$depth]['file']) ? $trace[$depth]['file'] : '';
             $traceLine = isset($trace[$depth]['line']) ? $trace[$depth]['line'] : '';
         }
 
         $argsStr = '';
-        if (is_array($args) && !empty($args)) {
-            foreach ($args as $key => $val) {
+        if(is_array($args) && !empty($args)){
+            foreach($args as $key => $val){
                 $str = is_array($val) ? json_encode($val) : $val;
                 $argsStr .= "{$key}[{$str}] ";
             }
@@ -193,20 +183,20 @@ class SpYiiLogFileTarget extends Target
         return file_put_contents($logFile, $message, FILE_APPEND);
     }
 
-    protected function writeLog($log_level, $str, $errno, $args, $depth) {
+    protected function writeLog($log_level, $str, $errno, $args, $depth){
 
         // 采用自定义函数写日志
-        if (isset($this->log_func) && $this->log_func != 'writeLog' && method_exists($this, $this->log_func)) {
+        if(isset($this->log_func) && $this->log_func != 'writeLog' && method_exists($this, $this->log_func)){
             $func = $this->log_func;
             return $this->$func($log_level, $str, $errno, $args, $depth);
         }
 
-        if (($log_level > $this->log_level) || !isset(self::$log_level_map[$log_level])) {
-            return;
+        if(($log_level > $this->log_level) || !isset(self::$log_level_map[$log_level])){
+            return false;
         }
 
         $module_name = SpModule::getModuleName();
-        $log_dir_path = $this->log_path . "/" .  $module_name;
+        $log_dir_path = $this->log_path . "/" . $module_name;
         if(!is_dir($log_dir_path)){
             FileHelper::createDirectory($log_dir_path, $this->dirMode, true);
         }
@@ -242,8 +232,8 @@ class SpYiiLogFileTarget extends Target
         $log_id = self::genLogID();
 
         $args_str = '';
-        if (is_array($args) && !empty($args)) {
-            foreach ($args as $arg_key => $arg_value) {
+        if(is_array($args) && !empty($args)){
+            foreach($args as $arg_key => $arg_value){
                 $arg_value_str = is_array($arg_value) ? json_encode($arg_value) : $arg_value;
                 $args_str .= "${arg_key}[${arg_value_str}] ";
             }
