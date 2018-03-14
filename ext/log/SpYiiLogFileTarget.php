@@ -1,5 +1,5 @@
 <?php
-namespace sp_framework\ext;
+namespace sp_framework\ext\log;
 
 use sp_framework\SpModule;
 use Yii;
