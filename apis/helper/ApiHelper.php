@@ -37,7 +37,7 @@ class ApiHelper{
         $app = Yii::$aliases['@app'];
         $config = require($app . "/../sp_framework/config/params.php");
 
-        foreach($server_ini as $key => $userConfig){
+        foreach((array)$server_ini as $key => $userConfig){
             if(isset($config[$key])){
                 $config[$key] = array_merge($config[$key], $userConfig);
             }
