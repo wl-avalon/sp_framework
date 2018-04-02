@@ -91,7 +91,7 @@ class DefaultHandler implements IRequestHandler{
     /**
      * @inheritdoc
      */
-    public function handleResponse(Response &$response, array $arrJson){
+    public function handleResponse(Response &$response, $arrJson){
         $message = '未知异常';
 
         if((!isset($arrJson['error']) || !isset($arrJson['error']['returnCode'])) && !isset($arrJson['result'])){

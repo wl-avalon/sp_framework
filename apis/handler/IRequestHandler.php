@@ -49,7 +49,7 @@ interface IRequestHandler{
      * @param array $data
      * @return Response
      */
-    function handleResponse(Response &$response, array $data);
+    function handleResponse(Response &$response, $data);
 
     function getDeserializer();
 }
